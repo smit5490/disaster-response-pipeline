@@ -11,7 +11,7 @@ the purpose of this project is to accomplish three key tasks:
 3. Build a Flask application that allows a user to enter a message and run the model pipeline. The application 
 developed is shown in the figure below:
   
-![Flask Application](app/flask_app.png)
+![Flask Application](./app/flask_app.png)
 
 ### Repository Contents
 ```bash
