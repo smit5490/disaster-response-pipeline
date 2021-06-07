@@ -1,7 +1,17 @@
 # Disaster Response Pipeline Project
+*Created as part of Udacity's Data Scientist Nanodegree Program*
 
 ### Background 
-...
+Being able to properly identify and respond to people's needs during a disaster (such as a flood, tornado, etc.) is 
+critical to reducing human casualties and suffering. [Figure Eight](https://appen.com) (now appen) has provided over 
+26,000 real-world disaster response text and twitter messages and classified them into 36 categories. Using this data, 
+the purpose of this project is to accomplish three key tasks:
+1. Write an ETL pipeline that cleans and merges the messages.csv and categories.csv files into a Sqlite database.
+2. Train a machine learning model pipeline to classify/categorize messages sent during disaster events.
+3. Build a Flask application that allows a user to enter a message and run the model pipeline. The application 
+developed is shown in the figure below:
+  
+![Flask Application](app/flask_app.png)
 
 ### Repository Contents
 ```bash
@@ -9,6 +19,7 @@
 ├── README.md
 ├── app                                 # Disaster response Flask application files
 │   ├── run.py
+|   ├── flask_app.png
 │   └── templates
 │       ├── go.html
 │       └── master.html
@@ -30,11 +41,11 @@
 
 ```
 
-
-
 ### Project Set-up:
 **Python Version:** 3.8.1  
-Create a clean virtual environment and install the package requirements:   
+  
+To run the etl and model training script and launch the Flask application, create a clean virtual environment and 
+install the package requirements:   
 ```bash 
 pip install -r requirements.txt 
 ```
