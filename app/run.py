@@ -1,36 +1,28 @@
 import json
 import plotly
 import pandas as pd
-
-from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
-
+import sys
+import os
+sys.path.append("./models")
+from train_classifier import GloveVectorizer, tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
 from sqlalchemy import create_engine
+import joblib
 
 
 app = Flask(__name__)
 
-def tokenize(text):
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
-
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///./data/disaster_response.db')
+df = pd.read_sql_table('messages', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load('./models/classifier.pkl')
+
+# Need to instantiate the GloveVectorizer for pickled pipeline to work.
+GloveVectorizer()
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,15 +34,43 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    
-    # create visuals
+
+    model_performance = pd.read_csv("./models/model_performance.csv")
+    model_performance = model_performance.sort_values("f1_score", ascending=False)
+    f1_categories = model_performance['category']
+    f1_value = model_performance["f1_score"]
+
+#    categories = df.iloc[:, 4:].melt(var_name="categories", value_name="count")
+#    categories = categories.groupby("categories")['count'].sum().reset_index()
+#    categories = categories.merge(model_performance, left_on="categories", right_on="category")
+#    categories = categories.sort_values("f1_score", ascending=False)
+#    category_values = categories["categories"]
+#    category_count = categories["count"]
+
+    categories = df.iloc[:, 3:].melt(id_vars="genre", var_name="categories", value_name="count")
+    categories = categories.groupby(["genre", "categories"])['count'].sum().reset_index()
+    category_count = categories.groupby("categories")['count'].sum().reset_index()
+    category_count = category_count.rename(columns={"count": "category_count"})
+    categories = categories.merge(category_count, on="categories")
+    categories = categories.sort_values("category_count", ascending = False)
+    data_obj = []
+    for genre in genre_names:
+        category_values = categories.loc[categories["genre"] == genre, "categories"]
+        category_count = categories.loc[categories["genre"] == genre, "count"]
+        data_obj.append(Bar(x=category_values,
+                            y=category_count,
+                            name=genre))
+
+
+
+
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
                 Bar(
                     x=genre_names,
-                    y=genre_counts
+                    y=genre_counts,
                 )
             ],
 
@@ -62,6 +82,38 @@ def index():
                 'xaxis': {
                     'title': "Genre"
                 }
+            }
+        },
+            {'data': data_obj,
+            'layout': {
+                'title': '# of Messages per Category',
+                'yaxis': {
+                    'title': "Message Count"
+                },
+                'xaxis': {
+                    'title': "Category",
+                    'tickangle': 45
+                },
+            'margin': {'b': 120
+                }
+            }
+        },
+            {'data': [
+                Bar(
+                    x=f1_categories,
+                    y=f1_value
+                )
+            ],
+            'layout': {
+                'title': 'F1-Score on Test Set',
+                'yaxis': {
+                    'title': "F1-Score"
+                },
+                'xaxis': {
+                    'title': "Category",
+                    'tickangle': 45
+                },
+            'margin': {'b': 120}
             }
         }
     ]

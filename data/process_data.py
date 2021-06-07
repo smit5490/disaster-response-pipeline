@@ -1,16 +1,79 @@
+# import libraries
+import pandas as pd
+from sqlalchemy import create_engine
 import sys
 
 
 def load_data(messages_filepath, categories_filepath):
-    pass
+    """ Reads in the messages and categories data sets and merges them into a single dataframe.
+    Args:
+        messages_filepath: String of file path to the messages data.
+        categories_filepath: String of file path to the categories data.
+    Returns:
+        Returns a merged dataframe of both inputs.
+    """
+
+    messages = pd.read_csv(messages_filepath)
+    categories = pd.read_csv(categories_filepath)
+    df = messages.merge(categories, on="id")
+
+    return df
 
 
 def clean_data(df):
-    pass
+    """Cleans categorical target columns.
+    Args:
+        df:  Dataframe result from load_data() function.
+    Returns:
+        A tidy dataframe with cleaned up categorical columns.
+    """
+    categories = df["categories"].str.split(";", expand=True)
+
+    # select the first row of the categories dataframe
+    row = categories.iloc[0]
+
+    # use this row to extract a list of new column names for categories.
+    # one way is to apply a lambda function that takes everything
+    # up to the second to last character of each string with slicing
+    category_colnames = [value[:-2] for value in row]
+
+    # rename the columns of categories
+    categories.columns = category_colnames
+
+    for column in categories:
+        # set each value to be the last character of the string
+        categories[column] = categories[column].str[-1]
+
+        # convert column from string to numeric
+        categories[column] = categories[column].astype(int)
+
+    # drop the original categories column from `df`
+    df = df.drop("categories", axis = 1)
+    df = pd.concat([df, categories], axis = 1)
+
+    # Clean up values greater than 1:
+    for col in df.columns[4:]:
+        if df[col].max() > 1:
+            df.loc[df[col] > 1, col] = 1
+
+    # drop duplicates
+    df = df.drop_duplicates()
+
+    return df
 
 
 def save_data(df, database_filename):
-    pass  
+    """Save tidy dataframe to sqlite database.
+    Args:
+        df: tidy dataframe generated from clean_data().
+        database_filename: Name of sqlite database.
+    Returns:
+        None
+    """
+
+    engine = create_engine('sqlite:///./{}'.format(database_filename))
+    df.to_sql('messages', engine, index=False, if_exists="replace")
+    return None
 
 
 def main():
