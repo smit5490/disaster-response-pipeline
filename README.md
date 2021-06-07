@@ -1,8 +1,8 @@
 # Disaster Response Pipeline Project
 *Created as part of Udacity's Data Scientist Nanodegree Program*
 
-### Background 
-Being able to properly identify and respond to people's needs during a disaster (such as a flood, tornado, etc.) is 
+## Background 
+Being able to quickly identify and respond to people's needs during a disaster (such as a flood, tornado, etc.) is 
 critical to reducing human casualties and suffering. [Figure Eight](https://appen.com) (now appen) has provided over 
 26,000 real-world disaster response text and twitter messages and classified them into 36 categories. Using this data, 
 the purpose of this project is to accomplish three key tasks:
@@ -13,7 +13,7 @@ developed is shown in the figure below:
   
 ![Flask Application](app/flask_app.png)
 
-### Repository Contents
+## Repository Contents
 ```bash
 .
 ├── README.md
@@ -41,7 +41,27 @@ developed is shown in the figure below:
 
 ```
 
-### Project Set-up:
+### File Descriptions
+* **run.py** - Launches Flask application.
+* **flask_app.png** - Partial Flask application image
+* **go.html** - HTML file rendered when classifying a message in the Flask application
+* **master.html** - HTML landing page for the Flask application.
+* **categories.csv** - Raw categories for messages received during a disaster.
+* **disaster_response.db** - Sqlite database containing a single table of cleaned messages and their associated 
+categories.  
+* **messages.csv** - Raw messages received during a disaster.
+* **process_data.py** - ETL script written to process and store the raw data into the Sqlite database.
+* **classifier.pkl** - Compressed pickled model pipeline. Uses a 
+[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html).
+* **f1_score_performance.png** - Bar chart of the model pipeline's f1-score performance on test data.
+* **model_performance.csv** - Model pipeline's classification report on test data.
+* **train_classifier.py** - Model pipeline training script. 
+* **ETL Pipeline Preparation.ipynb** - Jupyter notebook of etl development code.
+* **ML Pipeline Preparation.ipynb** - Jupyter notebook of machine learning development code.
+
+
+
+## Project Set-up:
 **Python Version:** 3.8.1  
   
 To run the etl and model training script and launch the Flask application, create a clean virtual environment and 
@@ -50,7 +70,7 @@ install the package requirements:
 pip install -r requirements.txt 
 ```
 
-### Instructions:
+## Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
