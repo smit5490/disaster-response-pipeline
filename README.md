@@ -19,7 +19,7 @@ developed is shown in the figure below:
 ├── README.md
 ├── app                                 # Disaster response Flask application files
 │   ├── run.py
-|   ├── flask_app.png
+│   ├── flask_app.png
 │   └── templates
 │       ├── go.html
 │       └── master.html
@@ -52,7 +52,7 @@ categories.
 * **messages.csv** - Raw messages received during a disaster.
 * **process_data.py** - ETL script written to process and store the raw data into the Sqlite database.
 * **classifier.pkl** - Compressed pickled model pipeline. Uses a 
-[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html).
+[GradientBoostingClassifier](hhttps://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html).
 * **f1_score_performance.png** - Bar chart of the model pipeline's f1-score performance on test data.
 * **model_performance.csv** - Model pipeline's classification report on test data.
 * **train_classifier.py** - Model pipeline training script. 

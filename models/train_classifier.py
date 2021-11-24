@@ -143,8 +143,6 @@ def build_model():
         ("model", MultiOutputClassifier(GradientBoostingClassifier(random_state=42)))
     ])
 
-    #        'features__tfidf_pipeline__vect__max_features': [50],
-
     parameters = {
         'features__tfidf_pipeline__reduce_dim__n_components': [100],
         'features__tfidf_pipeline__reduce_dim__random_state': [1234],
